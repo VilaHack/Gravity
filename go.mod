@@ -1,4 +1,4 @@
-module github.com/Jowiies/gravity
+module github.com/vilahack/gravity
 
 go 1.27.1
 

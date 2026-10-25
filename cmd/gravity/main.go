@@ -9,11 +9,11 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 
-	"github.com/Jowiies/gravity/internal/bucket"
-	"github.com/Jowiies/gravity/internal/config"
-	"github.com/Jowiies/gravity/internal/file"
-	pb "github.com/Jowiies/gravity/internal/grpc"
-	"github.com/Jowiies/gravity/internal/server"
+	"github.com/vilahack/gravity/internal/bucket"
+	"github.com/vilahack/gravity/internal/config"
+	"github.com/vilahack/gravity/internal/file"
+	pb "github.com/vilahack/gravity/internal/grpc"
+	"github.com/vilahack/gravity/internal/server"
 )
 
 func main() {
