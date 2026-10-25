@@ -1,0 +1,6 @@
+port: ${PORT:-50051}
+storage_directory: ${STORAGE_DIRECTORY:-/var/lib/gravity/files/}
+bucket:
+  default_max_size: ${BUCKET_DEFAULT_MAX_SIZE:-2GB}
+  default_max_file_size: ${BUCKET_DEFAULT_MAX_FILE_SIZE:-50MB}
+database: ${DB_FILE_PATH:-/var/lib/gravity/db/gravity.db}
