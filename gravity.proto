@@ -1,5 +1,5 @@
 syntax="proto3";
-option go_package="github.com/Jowiies/gravity/internal/grpc";
+option go_package="github.com/vilahack/gravity/internal/grpc";
 
 // The Bucket service definition
 service BucketService {

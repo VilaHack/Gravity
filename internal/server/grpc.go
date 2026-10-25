@@ -9,9 +9,9 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 
-	"github.com/Jowiies/gravity/internal/bucket"
-	"github.com/Jowiies/gravity/internal/file"
-	pb "github.com/Jowiies/gravity/internal/grpc"
+	"github.com/vilahack/gravity/internal/bucket"
+	"github.com/vilahack/gravity/internal/file"
+	pb "github.com/vilahack/gravity/internal/grpc"
 )
 
 func SetupLogging(ctx context.Context) (func(context.Context) error, error) {
