@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -17,6 +18,8 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		panic(err)
@@ -28,6 +31,12 @@ func main() {
 	}
 
 	defer db.Close()
+
+	loggingShutdown, err := server.SetupLogging(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer loggingShutdown(ctx)
 
 	bucketRepository := bucket.NewRepository(db)
 	fileRepository := file.NewRepository(db)

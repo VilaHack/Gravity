@@ -3,11 +3,14 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
+	"go.opentelemetry.io/otel/sdk/resource"
+	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 
 	"github.com/vilahack/gravity/internal/bucket"
 	"github.com/vilahack/gravity/internal/file"
@@ -17,10 +20,22 @@ import (
 func SetupLogging(ctx context.Context) (func(context.Context) error, error) {
 	exporter, err := otlploggrpc.New(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create log exporter: %w", err)
+	}
+
+	res, err := resource.Merge(
+		resource.Default(),
+		resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceName("gravity"),
+		),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create resource: %w", err)
 	}
 
 	provider := sdklog.NewLoggerProvider(
+		sdklog.WithResource(res),
 		sdklog.WithProcessor(sdklog.NewBatchProcessor(exporter)),
 	)
 
