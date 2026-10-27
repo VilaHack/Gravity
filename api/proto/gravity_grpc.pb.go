@@ -4,7 +4,7 @@
 // - protoc             v7.36.1
 // source: gravity.proto
 
-package grpc
+package gravitypb
 
 import (
 	context "context"

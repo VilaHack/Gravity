@@ -20,4 +20,4 @@ func (s *Service) ListFiles(bucketName string) ([]string, error) {
 	return append([]string{}, bucket.Files...), nil
 }
 
-func (s *Service) UpsertBucket(bucket Bucket)
+func (s *Service) UpsertBucket(bucket Bucket) {}

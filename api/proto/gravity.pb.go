@@ -4,7 +4,7 @@
 // 	protoc        v7.36.1
 // source: gravity.proto
 
-package grpc
+package gravitypb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -527,7 +527,7 @@ const file_gravity_proto_rawDesc = "" +
 	"\n" +
 	"UploadFile\x12\x12.UploadFileRequest\x1a\x13.UploadFileResponse\"\x00(\x01\x12?\n" +
 	"\fDownloadFile\x12\x14.DownloadFileRequest\x1a\x15.DownloadFileResponse\"\x000\x01\x124\n" +
-	"\tListFiles\x12\x11.ListFilesRequest\x1a\x12.ListFilesResponse\"\x00B*Z(github.com/vilahack/gravity/internal/grpcb\x06proto3"
+	"\tListFiles\x12\x11.ListFilesRequest\x1a\x12.ListFilesResponse\"\x00B1Z/github.com/vilahack/gravity/api/proto;gravitypbb\x06proto3"
 
 var (
 	file_gravity_proto_rawDescOnce sync.Once

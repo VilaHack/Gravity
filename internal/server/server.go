@@ -1,4 +1,4 @@
-// Package server contains all the grpc connection handlers
+// Package server contains all the grpc connection handlers and loggers
 package server
 
 import (
@@ -12,9 +12,9 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 
+	"github.com/vilahack/gravity/api/proto"
 	"github.com/vilahack/gravity/internal/bucket"
 	"github.com/vilahack/gravity/internal/file"
-	pb "github.com/vilahack/gravity/internal/grpc"
 )
 
 func SetupLogging(ctx context.Context) (func(context.Context) error, error) {
@@ -48,41 +48,14 @@ func SetupLogging(ctx context.Context) (func(context.Context) error, error) {
 }
 
 type GRPCServer struct {
-	pb.UnimplementedBucketServiceServer
+	gravitypb.UnimplementedBucketServiceServer
 	BucketService *bucket.Service
 	FileService   *file.Service
 }
 
-func NewGRPCServer(bucketService *bucket.Service, fileService *file.Service) *GRPCServer {
+func NewGRPCServer(bs *bucket.Service, fs *file.Service) *GRPCServer {
 	return &GRPCServer{
-		BucketService: bucketService,
-		FileService:   fileService,
+		BucketService: bs,
+		FileService:   fs,
 	}
-}
-
-func (s *GRPCServer) ListFiles(
-	_ context.Context,
-	request *pb.ListFilesRequest,
-) (*pb.ListFilesResponse, error) {
-	return nil, nil // TODO
-}
-
-func (s *GRPCServer) DownloadFile(
-	request *pb.DownloadFileRequest,
-	stream pb.BucketService_DownloadFileServer,
-) error {
-	return nil // TODO
-}
-
-func (s *GRPCServer) UploadFile(
-	stream pb.BucketService_UploadFileServer,
-) error {
-	return nil // TODO
-}
-
-func (s *GRPCServer) UpsertBucket(
-	_ context.Context,
-	request *pb.UpsertBucketRequest,
-) (*pb.UpsertBucketResponse, error) {
-	return nil, nil // TODO
 }
