@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BucketService_UpsertBucket_FullMethodName = "/BucketService/UpsertBucket"
-	BucketService_UploadFile_FullMethodName   = "/BucketService/UploadFile"
-	BucketService_DownloadFile_FullMethodName = "/BucketService/DownloadFile"
-	BucketService_ListFiles_FullMethodName    = "/BucketService/ListFiles"
+	BucketService_UpsertBucket_FullMethodName   = "/BucketService/UpsertBucket"
+	BucketService_UploadObject_FullMethodName   = "/BucketService/UploadObject"
+	BucketService_DownloadObject_FullMethodName = "/BucketService/DownloadObject"
+	BucketService_ListObjects_FullMethodName    = "/BucketService/ListObjects"
 )
 
 // BucketServiceClient is the client API for BucketService service.
@@ -34,9 +34,9 @@ type BucketServiceClient interface {
 	// If (bucket_exists) update it else create it
 	UpsertBucket(ctx context.Context, in *UpsertBucketRequest, opts ...grpc.CallOption) (*UpsertBucketResponse, error)
 	// If (!bucket_exists) create it. Upload file as stream.
-	UploadFile(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadFileRequest, UploadFileResponse], error)
-	DownloadFile(ctx context.Context, in *DownloadFileRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[DownloadFileResponse], error)
-	ListFiles(ctx context.Context, in *ListFilesRequest, opts ...grpc.CallOption) (*ListFilesResponse, error)
+	UploadObject(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadObjectRequest, UploadObjectResponse], error)
+	DownloadObject(ctx context.Context, in *DownloadObjectRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[DownloadObjectResponse], error)
+	ListObjects(ctx context.Context, in *ListObjectsRequest, opts ...grpc.CallOption) (*ListObjectsResponse, error)
 }
 
 type bucketServiceClient struct {
@@ -57,26 +57,26 @@ func (c *bucketServiceClient) UpsertBucket(ctx context.Context, in *UpsertBucket
 	return out, nil
 }
 
-func (c *bucketServiceClient) UploadFile(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadFileRequest, UploadFileResponse], error) {
+func (c *bucketServiceClient) UploadObject(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadObjectRequest, UploadObjectResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &BucketService_ServiceDesc.Streams[0], BucketService_UploadFile_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &BucketService_ServiceDesc.Streams[0], BucketService_UploadObject_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[UploadFileRequest, UploadFileResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[UploadObjectRequest, UploadObjectResponse]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type BucketService_UploadFileClient = grpc.ClientStreamingClient[UploadFileRequest, UploadFileResponse]
+type BucketService_UploadObjectClient = grpc.ClientStreamingClient[UploadObjectRequest, UploadObjectResponse]
 
-func (c *bucketServiceClient) DownloadFile(ctx context.Context, in *DownloadFileRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[DownloadFileResponse], error) {
+func (c *bucketServiceClient) DownloadObject(ctx context.Context, in *DownloadObjectRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[DownloadObjectResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &BucketService_ServiceDesc.Streams[1], BucketService_DownloadFile_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &BucketService_ServiceDesc.Streams[1], BucketService_DownloadObject_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[DownloadFileRequest, DownloadFileResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[DownloadObjectRequest, DownloadObjectResponse]{ClientStream: stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -87,12 +87,12 @@ func (c *bucketServiceClient) DownloadFile(ctx context.Context, in *DownloadFile
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type BucketService_DownloadFileClient = grpc.ServerStreamingClient[DownloadFileResponse]
+type BucketService_DownloadObjectClient = grpc.ServerStreamingClient[DownloadObjectResponse]
 
-func (c *bucketServiceClient) ListFiles(ctx context.Context, in *ListFilesRequest, opts ...grpc.CallOption) (*ListFilesResponse, error) {
+func (c *bucketServiceClient) ListObjects(ctx context.Context, in *ListObjectsRequest, opts ...grpc.CallOption) (*ListObjectsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListFilesResponse)
-	err := c.cc.Invoke(ctx, BucketService_ListFiles_FullMethodName, in, out, cOpts...)
+	out := new(ListObjectsResponse)
+	err := c.cc.Invoke(ctx, BucketService_ListObjects_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,9 +108,9 @@ type BucketServiceServer interface {
 	// If (bucket_exists) update it else create it
 	UpsertBucket(context.Context, *UpsertBucketRequest) (*UpsertBucketResponse, error)
 	// If (!bucket_exists) create it. Upload file as stream.
-	UploadFile(grpc.ClientStreamingServer[UploadFileRequest, UploadFileResponse]) error
-	DownloadFile(*DownloadFileRequest, grpc.ServerStreamingServer[DownloadFileResponse]) error
-	ListFiles(context.Context, *ListFilesRequest) (*ListFilesResponse, error)
+	UploadObject(grpc.ClientStreamingServer[UploadObjectRequest, UploadObjectResponse]) error
+	DownloadObject(*DownloadObjectRequest, grpc.ServerStreamingServer[DownloadObjectResponse]) error
+	ListObjects(context.Context, *ListObjectsRequest) (*ListObjectsResponse, error)
 	mustEmbedUnimplementedBucketServiceServer()
 }
 
@@ -124,14 +124,14 @@ type UnimplementedBucketServiceServer struct{}
 func (UnimplementedBucketServiceServer) UpsertBucket(context.Context, *UpsertBucketRequest) (*UpsertBucketResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpsertBucket not implemented")
 }
-func (UnimplementedBucketServiceServer) UploadFile(grpc.ClientStreamingServer[UploadFileRequest, UploadFileResponse]) error {
-	return status.Error(codes.Unimplemented, "method UploadFile not implemented")
+func (UnimplementedBucketServiceServer) UploadObject(grpc.ClientStreamingServer[UploadObjectRequest, UploadObjectResponse]) error {
+	return status.Error(codes.Unimplemented, "method UploadObject not implemented")
 }
-func (UnimplementedBucketServiceServer) DownloadFile(*DownloadFileRequest, grpc.ServerStreamingServer[DownloadFileResponse]) error {
-	return status.Error(codes.Unimplemented, "method DownloadFile not implemented")
+func (UnimplementedBucketServiceServer) DownloadObject(*DownloadObjectRequest, grpc.ServerStreamingServer[DownloadObjectResponse]) error {
+	return status.Error(codes.Unimplemented, "method DownloadObject not implemented")
 }
-func (UnimplementedBucketServiceServer) ListFiles(context.Context, *ListFilesRequest) (*ListFilesResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListFiles not implemented")
+func (UnimplementedBucketServiceServer) ListObjects(context.Context, *ListObjectsRequest) (*ListObjectsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListObjects not implemented")
 }
 func (UnimplementedBucketServiceServer) mustEmbedUnimplementedBucketServiceServer() {}
 func (UnimplementedBucketServiceServer) testEmbeddedByValue()                       {}
@@ -172,38 +172,38 @@ func _BucketService_UpsertBucket_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BucketService_UploadFile_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(BucketServiceServer).UploadFile(&grpc.GenericServerStream[UploadFileRequest, UploadFileResponse]{ServerStream: stream})
+func _BucketService_UploadObject_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(BucketServiceServer).UploadObject(&grpc.GenericServerStream[UploadObjectRequest, UploadObjectResponse]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type BucketService_UploadFileServer = grpc.ClientStreamingServer[UploadFileRequest, UploadFileResponse]
+type BucketService_UploadObjectServer = grpc.ClientStreamingServer[UploadObjectRequest, UploadObjectResponse]
 
-func _BucketService_DownloadFile_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(DownloadFileRequest)
+func _BucketService_DownloadObject_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DownloadObjectRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(BucketServiceServer).DownloadFile(m, &grpc.GenericServerStream[DownloadFileRequest, DownloadFileResponse]{ServerStream: stream})
+	return srv.(BucketServiceServer).DownloadObject(m, &grpc.GenericServerStream[DownloadObjectRequest, DownloadObjectResponse]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type BucketService_DownloadFileServer = grpc.ServerStreamingServer[DownloadFileResponse]
+type BucketService_DownloadObjectServer = grpc.ServerStreamingServer[DownloadObjectResponse]
 
-func _BucketService_ListFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListFilesRequest)
+func _BucketService_ListObjects_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListObjectsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BucketServiceServer).ListFiles(ctx, in)
+		return srv.(BucketServiceServer).ListObjects(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BucketService_ListFiles_FullMethodName,
+		FullMethod: BucketService_ListObjects_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BucketServiceServer).ListFiles(ctx, req.(*ListFilesRequest))
+		return srv.(BucketServiceServer).ListObjects(ctx, req.(*ListObjectsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -220,19 +220,19 @@ var BucketService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BucketService_UpsertBucket_Handler,
 		},
 		{
-			MethodName: "ListFiles",
-			Handler:    _BucketService_ListFiles_Handler,
+			MethodName: "ListObjects",
+			Handler:    _BucketService_ListObjects_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "UploadFile",
-			Handler:       _BucketService_UploadFile_Handler,
+			StreamName:    "UploadObject",
+			Handler:       _BucketService_UploadObject_Handler,
 			ClientStreams: true,
 		},
 		{
-			StreamName:    "DownloadFile",
-			Handler:       _BucketService_DownloadFile_Handler,
+			StreamName:    "DownloadObject",
+			Handler:       _BucketService_DownloadObject_Handler,
 			ServerStreams: true,
 		},
 	},

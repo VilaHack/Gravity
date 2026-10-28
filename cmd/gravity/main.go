@@ -16,10 +16,9 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/vilahack/gravity/api/proto"
-	"github.com/vilahack/gravity/internal/bucket"
 	"github.com/vilahack/gravity/internal/config"
-	"github.com/vilahack/gravity/internal/file"
 	"github.com/vilahack/gravity/internal/server"
+	"github.com/vilahack/gravity/internal/storage"
 )
 
 func main() {
@@ -28,7 +27,8 @@ func main() {
 
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		panic(err)
+		slog.Error("failed to load config", "error", err)
+		os.Exit(1)
 	}
 
 	db, err := badger.Open(badger.DefaultOptions(cfg.Database))
@@ -65,13 +65,11 @@ func main() {
 	opts = append(opts, grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	s := grpc.NewServer(opts...)
 
-	bucketRepository := bucket.NewRepository(db)
-	fileRepository := file.NewRepository(db)
+	storageRepository := storage.NewRepository(db)
 
-	bucketService := bucket.NewService(bucketRepository)
-	fileService := file.NewService(fileRepository)
+	storageService := storage.NewService(storageRepository)
 
-	gravitypb.RegisterBucketServiceServer(s, server.NewGRPCServer(bucketService, fileService))
+	gravitypb.RegisterBucketServiceServer(s, server.NewGRPCServer(storageService))
 
 	serverErr := make(chan error, 1)
 	go func() {

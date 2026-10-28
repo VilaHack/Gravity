@@ -1,5 +1,5 @@
-// Package file contains service and repository definition and implementation for file
-package file
+// Package storage contains bucket and object related logic
+package storage
 
 type Service struct {
 	Repository *Repository

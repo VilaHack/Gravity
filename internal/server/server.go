@@ -13,8 +13,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 
 	"github.com/vilahack/gravity/api/proto"
-	"github.com/vilahack/gravity/internal/bucket"
-	"github.com/vilahack/gravity/internal/file"
+	"github.com/vilahack/gravity/internal/storage"
 )
 
 func SetupLogging(ctx context.Context) (func(context.Context) error, error) {
@@ -49,13 +48,11 @@ func SetupLogging(ctx context.Context) (func(context.Context) error, error) {
 
 type GRPCServer struct {
 	gravitypb.UnimplementedBucketServiceServer
-	BucketService *bucket.Service
-	FileService   *file.Service
+	StorageService *storage.Service
 }
 
-func NewGRPCServer(bs *bucket.Service, fs *file.Service) *GRPCServer {
+func NewGRPCServer(ss *storage.Service) *GRPCServer {
 	return &GRPCServer{
-		BucketService: bs,
-		FileService:   fs,
+		StorageService: ss,
 	}
 }
