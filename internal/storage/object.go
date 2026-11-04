@@ -1,11 +1,15 @@
 package storage
 
-import "time"
+import (
+	"time"
+	"uuid"
+)
 
 type Object struct {
+	ID           uuid.UUID
 	BucketName   string
 	Name         string
-	RelativeKey  string
 	RelativePath string
 	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

@@ -76,7 +76,7 @@ func (r *Repository) InsertObject(o Object) error {
 	}
 
 	err = r.DB.View(func(txn *badger.Txn) error {
-		_, err := txn.Get([]byte(objectKey(o.BucketName, o.RelativeKey)))
+		_, err := txn.Get([]byte(objectKey(o.BucketName, o.ID)))
 		if err == nil {
 			return ErrObjectAlreadyExists
 		}
@@ -87,7 +87,7 @@ func (r *Repository) InsertObject(o Object) error {
 	}
 
 	err = r.DB.Update(func(txn *badger.Txn) error {
-		err := txn.Set([]byte(objectKey(o.BucketName, o.RelativeKey)), value)
+		err := txn.Set([]byte(objectKey(o.BucketName, o.ID)), value)
 		if err != nil {
 			return err
 		}

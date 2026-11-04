@@ -15,7 +15,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 
-	"github.com/vilahack/gravity/api/proto"
+	gravitypb "github.com/vilahack/gravity/api/proto"
 	"github.com/vilahack/gravity/internal/config"
 	"github.com/vilahack/gravity/internal/server"
 	"github.com/vilahack/gravity/internal/storage"

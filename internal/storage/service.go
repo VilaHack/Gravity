@@ -10,3 +10,7 @@ func NewService(repository *Repository) *Service {
 		Repository: repository,
 	}
 }
+
+func (s *Service) UpsertObject(bucket, name, contentType string, data []byte) ([]byte, error) {
+	return nil, nil // TODO
+}

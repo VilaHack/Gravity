@@ -1,4 +1,4 @@
-syntax="proto3";
+ryntax="proto3";
 option go_package="github.com/vilahack/gravity/api/proto;gravitypb";
 
 // The Bucket service definition
@@ -27,24 +27,25 @@ message UpsertBucketResponse {
   bool was_created = 1;
 }
 
-message ObjectMetadata {
-  string bucket_name = 1;
-  string file_name = 2;
+message UploadObjectMetadata {
+  string file_name = 1;
+  string content_type = 2; // MIME type
+  string bucket_name = 3;
 }
 
 message UploadObjectRequest {
   oneof payload {
-    ObjectMetadata metadata = 1;
+    UploadObjectMetadata metadata = 1;
     bytes chunk = 2;
   }
 }
 
 message UploadObjectResponse {
-  string file_relative_path = 1;
+  bytes checksum_sha256 = 1; //32-byte SHA-256
 }
 
 message DownloadObjectRequest {
-  ObjectMetadata metadata = 1;
+  string file_name = 1;
 }
 
 message DownloadObjectResponse {
