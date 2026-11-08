@@ -19,10 +19,16 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            go_1_27
 
+            # Go dependencies
+            go_1_27
             gopls
             gotools
+
+            # Protobuf compiler and code generation dependencies
+            protobuf
+            protoc-gen-go
+            protoc-gen-go-grpc
           ];
 
           shellHook = ''

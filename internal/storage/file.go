@@ -25,13 +25,14 @@ func getObjectPath(id uuid.UUID) string {
 	return fmt.Sprintf("%s/%s.blob", idStr[0:2], idStr)
 }
 
-func getBucketPath(rootPath, bucket string) string {
-	return fmt.Sprintf("%s/%s/", rootPath, bucket)
+func getBucketPath(rootPath string, id uuid.UUID) string {
+	idStr := id.String()
+	return fmt.Sprintf("%s/%s/%s/", rootPath, idStr[0:2], idStr)
 }
 
-func createPath(rootPath, bucket string, id uuid.UUID) (*string, error) {
-	idStr := id.String()
-	path := fmt.Sprintf("%s/%s/%s/", rootPath, bucket, idStr[0:2])
+func createBucketPath(rootPath string, id uuid.UUID) (*string, error) {
+	path := getBucketPath(rootPath, id)
+
 	err := os.Mkdir(path, FilePermissions)
 	if err != nil {
 		return nil, fmt.Errorf("[FileSystem]: failed to create path %s. Err: %v", path, err)
@@ -40,8 +41,25 @@ func createPath(rootPath, bucket string, id uuid.UUID) (*string, error) {
 	return &path, nil
 }
 
-func (fs *FileSystem) UpsertObject(meta Object, data []byte) error {
-	path, err := createPath(fs.rootPath, meta.BucketName, meta.ID)
+func createObjectPath(rootPath string, bucket, id uuid.UUID) (*string, error) {
+	bucketPath, err := createBucketPath(rootPath, bucket)
+	if err != nil {
+		return nil, err
+	}
+
+	idStr := id.String()
+	fullPath := fmt.Sprintf("%s%s", bucketPath, idStr[0:2])
+
+	err = os.Mkdir(fullPath, FilePermissions)
+	if err != nil {
+		return nil, fmt.Errorf("[FileSystem]: failed to create path %s. Err: %v", fullPath, err)
+	}
+
+	return &fullPath, nil
+}
+
+func (fileSystem *FileSystem) UpsertObject(meta Object, data []byte) error {
+	path, err := createObjectPath(fileSystem.rootPath, meta.ID, meta.ID)
 	if err != nil {
 		return err
 	}
@@ -54,8 +72,8 @@ func (fs *FileSystem) UpsertObject(meta Object, data []byte) error {
 	return nil
 }
 
-func (fs *FileSystem) DeleteObject(meta Object) error {
-	err := os.Remove(getBucketPath(fs.rootPath, meta.BucketName) + getObjectPath(meta.ID))
+func (fileSystem *FileSystem) DeleteObject(meta Object) error {
+	err := os.Remove(getBucketPath(fileSystem.rootPath, meta.ID) + getObjectPath(meta.ID))
 
 	if err != nil {
 		fmt.Errorf("[FileSystem]: failed to delete object %s. Err: %v", meta.Name, err)

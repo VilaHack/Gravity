@@ -1,4 +1,4 @@
-ryntax="proto3";
+syntax="proto3";
 option go_package="github.com/vilahack/gravity/api/proto;gravitypb";
 
 // The Bucket service definition
@@ -7,14 +7,13 @@ service BucketService {
   // If (bucket_exists) update it else create it
   rpc UpsertBucket(UpsertBucketRequest) returns(UpsertBucketResponse){}
 
-  // If (!bucket_exists) create it. Upload file as stream.
-  rpc UploadObject(stream UploadObjectRequest) returns(UploadObjectResponse) {}
+  // If (!bucket_exists) create it. Upsert file as stream.
+  rpc UpsertObject(stream UpsertObjectRequest) returns(UpsertObjectResponse) {}
 
   rpc DownloadObject(DownloadObjectRequest) returns(stream DownloadObjectResponse) {}
 
   rpc ListObjects(ListObjectsRequest) returns(ListObjectsResponse){}
 }
-
 
 message UpsertBucketRequest {
   string name = 1;
@@ -27,20 +26,21 @@ message UpsertBucketResponse {
   bool was_created = 1;
 }
 
-message UploadObjectMetadata {
+message UpsertObjectMetadata {
   string file_name = 1;
   string content_type = 2; // MIME type
   string bucket_name = 3;
+  repeated string directories = 4; // Symbolic subdirectories
 }
 
-message UploadObjectRequest {
+message UpsertObjectRequest {
   oneof payload {
-    UploadObjectMetadata metadata = 1;
+    UpsertObjectMetadata metadata = 1;
     bytes chunk = 2;
   }
 }
 
-message UploadObjectResponse {
+message UpsertObjectResponse {
   bytes checksum_sha256 = 1; //32-byte SHA-256
 }
 

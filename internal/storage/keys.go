@@ -1,6 +1,6 @@
 package storage
 
-import "uuid"
+import "fmt"
 
 const (
 	bucketPrefix = "b:"
@@ -11,6 +11,11 @@ func bucketKey(name string) []byte {
 	return []byte(bucketPrefix + name)
 }
 
-func objectKey(bucket string, id uuid.UUID) []byte {
-	return []byte(objectPrefix + bucket + ":" + id.String())
+func objectKey(bucket, name string, directories []string) []byte {
+	directoryKeys := ""
+
+	for _, directory := range directories {
+		directoryKeys = fmt.Sprintf("%s:%s", directoryKeys, directory)
+	}
+	return []byte(objectPrefix + bucket + directoryKeys + ":" + name)
 }
